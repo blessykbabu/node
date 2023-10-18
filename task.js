@@ -10,12 +10,25 @@ const server = http.createServer((req,res)=>{
         res.writeHead(200,{'Content-Type':'text/html'});
         res.write(`
         <body>
-        <form style="text-align:center;" action="/api">
-        <input type="text" placeholder="enter your name" name="name" ><br>
-        <input type="text" placeholder="enter your email" name="email"><br>
+        <form style="text-align:center;" action="/api" method="get" onsubmit="abc(event)">
+        <input type="text" placeholder="enter your name" name="name" id="username"><br>
+        <input type="text" placeholder="enter your email" name="email" id="email"><br>
         <input type="submit" name="submit">
         </form>
-        <script></script>
+        <script>
+        function abc(event){
+            event.preventDefault();
+            let username=document.getElementById("username").value
+            let email=document.getElementById("email").value
+            console.log(username,email)
+            fetch("/api?username="+username + "&email=" +email)
+            .then(res => res.text())
+            .then(data =>{
+                console.log(data)
+            })
+        }
+
+                </script>
         <body>`);
    
     res.end();
