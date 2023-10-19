@@ -16,7 +16,7 @@ const server = http.createServer((req,res)=>{
 
         })
     }
-    if(path === "/api"){
+    if(path === "/set-todo"){
     let query=url.parse(req.url,true).query;
     fs.readFile("./datatodo.json","utf-8",(error,data)=>{
         let list=data ==="" ? [] : JSON.parse(data);
@@ -25,10 +25,32 @@ const server = http.createServer((req,res)=>{
             if(error){
                 res.write("error occured");
             }
-        
+        res.end();
         })
     })
    
+    }
+    if(path ==="/get-todo"){
+        fs.readFile("./datatodo.json","utf-8",(error,data)=>{
+            console.log(data)
+            res.writeHead(200,{"content-Type":"text/json"});
+            res.write(JSON.stringify(data));
+            res.end();
+        })
+    }
+    if(path ==="/del-todo"){
+        let query=url.parse(req.url,true).query;
+        fs.readFile("./datatodo.json","utf-8",(error,data)=>{
+            let dataObj=JSON.parse(data)
+            fs.writeFile("./datatodo.json",JSON.stringify(dataObj.filter(element => element.todolist !=query.todo)),
+            error =>{
+                res.write("deleted")
+                if(error){
+                    res.write("error occured")
+                }
+                res.end();
+            })
+        })
     }
 
 
