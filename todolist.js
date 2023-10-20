@@ -53,7 +53,26 @@ const server = http.createServer((req,res)=>{
         })
     }
 
+if(path==="/edit-todo"){
+    let query=url.parse(req.url,true).query;
+    console.log(query);
+    fs.readFile("./datatodo.json","utf-8",(error,data)=>{
+        let newList=JSON.parse(data).map(item =>{
+            if(item.todolist === query.oldTodo){
+                return {todolist:query.newTodo};
 
+            }
+            return item;
+        });
+        fs.writeFile("./datatodo.json",JSON.stringify(newList),error =>{
+            res.write("success");
+            if(error){
+                res.write("error occured")
+            }
+            res.end();
+        })
+    })
+}
     
 });
 server.listen(port,(error)=>{

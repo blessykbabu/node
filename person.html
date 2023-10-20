@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Details</title>
+  </head>
+  <form style="text-align:center;" action="/api" method="get" onsubmit="abc(event)">
+    <input type="text" placeholder="enter your name" name="name" id="username"><br>
+    <input type="text" placeholder="enter your email" name="email" id="email"><br>
+    <input type="submit" name="submit">
+    </form>
+    <script>
+    function abc(event){
+        event.preventDefault();
+        let username=document.getElementById("username").value
+        let email=document.getElementById("email").value
+        console.log(username,email)
+        fetch("/api?username="+username + "&email=" +email)
+        .then(res => res.text())
+        .then(data =>{
+            console.log(data)
+        })
+    }
+
+            </script>
+  </body>
+</html>

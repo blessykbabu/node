@@ -16,17 +16,24 @@
 
     <script>
       let list = document.getElementById("list");
-      fetch("/get-todo")
+      function print(){
+        fetch("/get-todo")
         .then((res) => res.json())
         .then((data) => {
           let dataObj = JSON.parse(data ? data : "[]");
 
           console.log(dataObj);
+          list.innerHTML ="";
           dataObj.forEach((element) => {
-            let li = `<li>${element.todolist}<button onClick="del('${element.todolist}')">Delete</button></li>`;
+            let li = `<li>${element.todolist}<button onClick="del('${element.todolist}')">Delete</button>
+              <button onClick="edit('${element.todolist}')">Edit</button>
+              
+              </li>`;
             list.innerHTML += li;
           });
         });
+      }
+      print();
       function abc(event) {
         event.preventDefault();
         let todolist = document.getElementById("todolist").value;
@@ -36,7 +43,10 @@
           .then((res) => res.text())
           .then((data) => {
             console.log(data);
-            list.innerHTML+=`<li>${todolist}<button onClick="del('${todolist}')">Delete</button></li>`;
+            list.innerHTML+=`<li>${todolist}
+              <button onClick="del('${todolist}')">Delete</button>
+              <button onClick="edit('${todolist}')">Edit</button>
+              </li>`;
           });
       }
       function del(todolist){
@@ -46,6 +56,18 @@
         .then(data =>{
             console.log(data);
             location.reload();
+        })
+
+      }
+
+
+      function edit(oldTodo){
+        let newTodo=prompt("Enter new todo")
+        fetch(`/edit-todo?oldTodo=${oldTodo}&newTodo=${newTodo}`)
+        .then(res => res.text())
+        .then(data =>{
+            console.log(data);
+            print();
         })
 
       }
