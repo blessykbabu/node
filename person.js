@@ -1,6 +1,7 @@
 const http = require("http")
 const url = require("url");
-const fs=require("fs")
+const fs=require("fs");
+const { error } = require("console");
 
 const port =3000;
 const server = http.createServer((req,res)=>{
@@ -29,6 +30,34 @@ const server = http.createServer((req,res)=>{
         res.write(`Username is ${/^[a-z0-9]{4,}$/.test(query.name) ? "valid":"invalid"}
         email id is ${/^[a-z0-9]+@[a-z0-9]+\.[a-z]{2,6}$/.test(query.email) ? "valid":"invalid"}`);
         res.end();
+    }
+    if(path ==="/get-details"){
+        fs.readFile("./details","utf-8",(error,data)=>{
+            console.log(data)
+            res.writeHead(200,{"content-Type":"text/json"});
+            res.write(JSON.stringify(data));
+            res.end();
+        })
+    }
+    fs.readdir("./details",(error,data)=>{
+        console.log(data)
+        let filesP=data.map(item => readFile(`./details/${item}`,"utf-8"))
+        Promise.all(filesP)
+        .then(files =>{
+           
+            res.write(JSON.stringify(files));
+            res.end();
+        })
+    })
+
+
+    function readFile(fileName,encoding){
+        return new Promise((res,rej)=>{
+            fs.readFile(fileName,encoding,(error,file) =>{
+                if(error) return rej(error);
+                res(file);
+            })
+        })
     }
 });
 server.listen(port,(error)=>{

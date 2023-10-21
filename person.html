@@ -21,6 +21,21 @@
         .then(data =>{
             console.log(data)
         })
+
+        fetch("/get-details")
+        .then((res) => res.json())
+        .then((data) => {
+          let dataObj = JSON.parse(data ? data : "[]");
+
+          console.log(dataObj);
+          list.innerHTML ="";
+          dataObj.forEach((element) => {
+            let li = `<li ${username}
+              
+              </li>`;
+            list.innerHTML += li;
+          });
+        });
     }
 
             </script>
