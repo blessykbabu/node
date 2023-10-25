@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    
+  </head>
+  <body>
+    <h3>TO DO LIST</h3>
+    <form action="/set-todo" method="get" onsubmit="abc(event)">
+      <input type="text" placeholder="Add List" name="todo" id="todolist" style="background-color: lightpink; color:white; width:200px;  height: 80px;" />
+      <input type="submit" style="background-color: white;color:green; border: 0px;" />
+      
+    </form>
+    <ol id="list"></ol>
+
+    <script>
+      let list = document.getElementById("list");
+      function print(){
+        fetch("/get-todo")
+        .then((res) => res.json())
+        .then((data) => {
+          let dataObj = JSON.parse(data ? data : "[]");
+
+          console.log(dataObj);
+          list.innerHTML ="";
+          dataObj.forEach((element) => {
+            let li = `<li style="margin:5px;">${element.todolist}<button onClick="del('${element.todolist}')" style="background-color:white; color:red; border:0px; margin:5px;">Delete</button>
+              <button onClick="edit('${element.todolist}')" style="background-color:white; color:blue; border:0px;
+            ">Edit</button>
+              
+              </li>`;
+            list.innerHTML += li;
+          });
+        });
+      }
+      print();
+      function abc(event) {
+        event.preventDefault();
+        let todolist = document.getElementById("todolist").value;
+
+        console.log(todolist);
+        fetch("/set-todo?todolist=" + todolist)
+          .then((res) => res.text())
+          .then((data) => {
+            console.log(data);
+            list.innerHTML+=`<li>${todolist}
+              <button onClick="del('${todolist}')">Delete</button>
+              <button onClick="edit('${todolist}')">Edit</button>
+              </li>`;
+          });
+      }
+      function del(todolist){
+        console.log(todolist)
+        fetch(`/del-todo?todo=${todolist}`)
+        .then(res => res.text())
+        .then(data =>{
+            console.log(data);
+            location.reload();
+        })
+
+      }
+
+
+      function edit(oldTodo){
+        let newTodo=prompt("Enter new todo")
+        fetch(`/edit-todo?oldTodo=${oldTodo}&newTodo=${newTodo}`)
+        .then(res => res.text())
+        .then(data =>{
+            console.log(data);
+            print();
+        })
+
+      }
+
+    </script>
+  </body>
+</html>
